@@ -2,7 +2,7 @@
 
 Create a VM that uses 4 Data Disks to test IOPS
 
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https://raw.githubusercontent.com/AZITCAMP/Labfiles/master/lab02/azuredeploy.json" target="_blank">
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2FAZITCAMP%2FLabfiles%2Fmaster%2Flab02%2Fazuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
 
