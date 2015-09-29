@@ -1,8 +1,8 @@
-# VM-high-iops-data-disks
+# Lab 02 VM - D2 VM with 4 striped data disk
 
 Create a VM from 32 Data Disks configured for high IOPS
 
-<a href="https://portal.azure.com/#create/Microsoft.Template/uri/hhttps://raw.githubusercontent.com/AZITCAMP/Labfiles/master/lab02/azuredeploy.json" target="_blank">
+<a href="https://portal.azure.com/#create/Microsoft.Template/uri/https://raw.githubusercontent.com/AZITCAMP/Labfiles/master/lab02/azuredeploy.json" target="_blank">
     <img src="http://azuredeploy.net/deploybutton.png"/>
 </a>
 
