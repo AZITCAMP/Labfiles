@@ -1,0 +1,28 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "newStorageAccountName": {
+      "value": "myStorageAccount"
+    },
+    "adminUsername": {
+      "value": "itcampdmin"
+    },
+     "dnsNameForPublicIP": {
+      "value": "myDnsName"
+    },
+      "vmSize": {
+      "value": "Standard_DS2"
+    },
+      "location": {
+      "value": "West US"
+    },
+      "sizeOfEachDataDiskinGB": {
+      "value": "128"
+    },
+    "modulesURL" : {
+     "value":  "https://github.com/AZITCAMP/Labfiles/blob/master/lab02/ConfigureVM.ps1.zip?raw=true"
+    }
+  }
+}
+
