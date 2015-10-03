@@ -10,6 +10,7 @@
     },
     "storageAccount": {
       "type": "string",
+      "defaultValue": "useuniquenamehere",
       "metadata": {
         "description": "Name of the Storage Account. This has to be a uinique name, up to 24 chars, all lowercase."
       }
