@@ -1,8 +1,10 @@
 ﻿<# 
 .SYNOPSIS 
-   This script is used to create a starting point for the Azure ITPRO Camp lab exercises.The script first determines 
-   a globally unique name for a storage account that can be used for the lab exercises and then creates a 
-   new Azure resource group for use in the lab exercises.   
+   This script is used to create the infrastructure starting point for Lab 03 of the Azure ITPRO Camp lab exercises.
+   The script creates a new resource group    and a new resource group deployment that comprises 2 virtual machines 
+   and 3 subnets. The scrip requires that you provide your initials. It uses these initials to create the unique names
+   required by the deployment.
+      
 .DESCRIPTION | USAGE
    The script first attempts to remove any local Azure subscription certificates that might interfere with 
    logging into the subscription. You can ignore any errors, if they appear, before you are prompted to log on 
