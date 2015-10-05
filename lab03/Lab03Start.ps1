@@ -10,12 +10,25 @@
    logging into the subscription. You can ignore any errors, if they appear, before you are prompted to log on 
    to your Azure subscription.
 
-   IMPORTANT: Before running this script, please note that you will be prompted to provide your intiails.
-   These intials are used to determine a unique name for the storage account. For storage account names,
-   you must use all lower case letters or numbers. No hyphens or other characters are allowed.
+   IMPORTANT: Before running this script, please note that you will be prompted to provide your initials 
+   and the IP address of your VPN device (if you are using the lab environment, this is the external IP 
+   address of the EDGE virtual machine). *In the lab environment, you need to reconfigure the Edge 
+   virtual machine to get a public IP address, as per the lab instructions. If you are doing this lab 
+   using your own environment, please keep in mind that your VPN endpoint cannot be behind a NAT device. 
+   If you do not have a VPN endpoint, you can enter a random IP address. You will still be able to most 
+   of the lab steps.
 
-   At the end of the script, you will be prompted to provide the Admin password. The scipt may take anywhere
-   from 10 - 20 minutes to complete after you enter the Admin password.
+   The intials are used to determine a unique name for the storage account and public DNS name. 
+
+   
+   Finally, just before the deployment begins, you will be prompted to provide the Admin password and the publick IP address
+   of the public IP address of the VPN endpoint (the onprem VPN device or remote site) you are going to use for the lab
+   exercises.  
+
+   
+   The scipt may take anywhere from 10 - 20 or more minutes to complete after you enter the Admin password. The VPN gateway takes some 
+   time to provision, and will be the last element to be provisioned. Please be patient. You can log in to the Azure 
+   to watch the progress of the deployment provisioning process. 
       
 #> 
 
@@ -23,6 +36,7 @@
 
 $init = Read-Host -Prompt "Please type your initials in lower case, and then press ENTER."
 Write-Host ""
+
 
 #Remove any subscription information that could interfere with then sign out before signing into the Azure account.
 
@@ -150,4 +164,16 @@ $parameters.assetlocation = $assetlocation
 New-AzureResourceGroupdeployment -Name $deploymentname -ResourceGroupName $rgname -TemplateParameterObject $parameters -TemplateUri $templatefileURI -Force 
 
 
+# Display the public IP addresses used by the deployment
 
+Write-Host ""
+Write-Host "The following shows the public IP addresses used by the deployment. PubiP0 corresponds to FE1; PubIP1 corresponds to BE1."
+
+Get-AzurePublicIpAddress | select name, IPaddress
+
+Write-Host ""
+Write-host "The fqdn for FE1 is:"
+Write-host ""
+Write-host "$publicDNSname.westus.cloudapp.azure.com"
+Write-host ""
+Write-host "BE1 does not have a corresponding DNS name. This is by design."

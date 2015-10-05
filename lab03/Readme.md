@@ -17,7 +17,7 @@ To deploy this template to Azure, you you will need to provide values for the fo
 3. localGatewayIpAddress - Public IP address of the VPN endpoint (the onprem VPN device or remote site).* 
 3. AdminPassword - password for the local admin accounts for the two virtual machines created in this deployment.
 
-*In the lab environment, you need to reconfigure the Edge virtual machine to get a public IP address, as per the lab instructions. If you are doing this lab using your own environment, please keep in mind that your VPN endpoint cannot be behind a NAT device. If you do not have a VPN endpoint, you can enter a random IP address. You will still be able to most of the lab steps.
+<i> *In the lab environment, you need to reconfigure the Edge virtual machine to get a public IP address, as per the lab instructions. If you are doing this lab using your own environment, please keep in mind that your VPN endpoint cannot be behind a NAT device. If you do not have a VPN endpoint, you can enter a random IP address. You will still be able to most of the lab steps.</i>
 
 As an alternative to deploying the envrionment using the link above, you can deploy this template using the Lab03start.ps1 PowerShell script. This script requires your initials, Admin password, and localGatewayIPAddress as inputs. Both The Storage account and public DNS names are created using your intials to create the unique names required by the deployment. In the case of the storage account name, the script verifies that it is globally unique. Your initials and a random number between 10,000 and 99,999 are concatnated to create a unique dns name.
 
