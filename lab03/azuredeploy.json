@@ -30,6 +30,7 @@
     },
     "localGatewayIpAddress": {
       "type": "string",
+      "defaultValue": "0.0.0.0",
       "metadata": {
         "description": "Public IP address for the gateway to connect to (from other VNet/on-prem)"
       }    
