@@ -11,9 +11,6 @@
     "publicDNSName": {
       "value": "myDnsName"
     },
-   "localGatewayIpAddress": {
-     "value": "0.0.0.0"
-   },
     "assetlocation": {
       "value": "https://github.com/AZITCAMP/Labfiles/raw/master"
     }
