@@ -28,6 +28,12 @@
         "description": "The password for the administrator account of the new VM and the domain"
       }
     },
+    "localGatewayIpAddress": {
+      "type": "string",
+      "metadata": {
+        "description": "Public IP address for the gateway to connect to (from other VNet/on-prem)"
+      }    
+    },
     "assetLocation": {
       "type": "string",
       "defaultValue": "https://github.com/AZITCAMP/Labfiles/raw/master",
@@ -53,6 +59,14 @@
     "GWSubnetName": "GatewaySubnet",
     "GWSubnet-id": "[concat(variables('VNETID'),'/subnets/',variables('GWSubnetName'))]",
     "publicIPAddressName": "PubIP",
+    "enableBgp": "false",
+    "gatewayType": "vpn",
+    "vpnType": "RouteBased",
+    "localGatewayName": "LocalSiteGW",
+    "localGatewayAddressPrefix": "192.168.10.0/24",
+    "gatewayPublicIPName": "GWIP",
+    "gatewayName": "VNETGW",
+    "connectionName": "VNETGatewayConfig",
     "vnetAddressRange": "10.0.0.0/16",
     "subnetAddressRange": "10.0.0.0/24",
     "dnsServerPrivateIp": "10.0.0.8"    
@@ -78,6 +92,15 @@
       "properties": {
         "publicIPAllocationMethod": "Dynamic"
       }
+    },
+    {
+      "apiVersion": "2015-05-01-preview",
+      "type": "Microsoft.Network/publicIPAddresses",
+      "name": "[variables('gatewayPublicIPName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "publicIPAllocationMethod": "Dynamic"
+       }      
     },
     {
       "apiVersion": "2015-05-01-preview",
@@ -119,6 +142,49 @@
             }
           }
         ]
+      }
+    },
+    {
+      "apiVersion": "2015-05-01-preview",
+      "type": "Microsoft.Network/localNetworkGateways",
+      "name": "[variables('localGatewayName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "localNetworkAddressSpace": {
+          "addressPrefixes": [
+            "[variables('localGatewayAddressPrefix')]"
+          ]
+        },
+        "gatewayIpAddress": "[parameters('localGatewayIpAddress')]"
+      }
+    },
+    {
+      "apiVersion": "2015-05-01-preview",
+      "type": "Microsoft.Network/virtualNetworkGateways",
+      "name": "[variables('gatewayName')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/publicIPAddresses/', variables('gatewayPublicIPName'))]",
+        "[concat('Microsoft.Network/virtualNetworks/', variables('VNetName'))]"
+      ],
+      "properties": {
+        "ipConfigurations": [
+          {
+            "properties": {
+              "privateIPAllocationMethod": "Dynamic",
+              "subnet": {
+                "id": "[variables('GWsubnet-id')]"
+              },
+              "publicIPAddress": {
+                "id": "[resourceId('Microsoft.Network/publicIPAddresses',variables('gatewayPublicIPName'))]"
+              }
+            },
+            "name": "vnetGatewayConfig"
+          }
+        ],
+        "gatewayType": "Vpn",
+        "vpnType": "RouteBased",
+        "enableBgp": false
       }
     },
     {
