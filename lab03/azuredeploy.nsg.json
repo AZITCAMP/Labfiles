@@ -1,0 +1,307 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+      "FENSGName": {
+      "type": "string",
+      "defaultValue": "FE_NSG",
+      "metadata": {
+        "description": "This is name of the networkSecurityGroup that will be assigned to FrontEnd Subnet"
+      }
+    },
+    "BENSGName": {
+      "type": "string",
+      "defaultValue": "BE_NSG",
+      "metadata": {
+        "description": "This is name of the networkSecurityGroup that will be assigned to BackEnd Subnet"
+      }
+    }
+  },
+  "variables": {
+    "VirtualNetworkName": "Lab03_VNET",
+    "addressPrefix" : "10.0.0.0/16",
+    "FESubnetPrefix" : "10.0.0.0/24",
+    "BESubnetPrefix" : "10.0.1.0/24",
+    "GWSubnetPrefix" : "10.0.200.0/28",
+    "OnPremSubnetPrefix": "192.168.10.0/24",
+    "FESubnetName" : "FESubnet",
+    "BESubnetName" : "BESubnet",
+    "GWSubnetName" : "GatewaySubnet"
+  },
+  "resources": [
+    {
+      "apiVersion": "2015-05-01-preview",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[parameters('FENSGName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "rpd-inbound-from-onprem",
+            "properties": {
+              "description": "Allow RDP from OnPrem",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "3389",
+              "sourceAddressPrefix": "[variables('OnPremSubnetPrefix')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 100,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "allow-web-inbound",
+            "properties": {
+              "description": "Allow WEB from Internet",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "80",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 101,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "Block-BE-Inbound",
+            "properties": {
+              "description": "Block BE Subnet",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "*",
+              "sourceAddressPrefix": "[variables('BESubnetPrefix')]",
+              "destinationAddressPrefix": "*",
+              "access": "Deny",
+              "priority": 102,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "web-inbound-from-onprem",
+            "properties": {
+              "description": "Allow Web from OnPrem",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "80",
+              "sourceAddressPrefix": "[variables('OnPremSubnetPrefix')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 103,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "Block-onpremm-Inbound",
+            "properties": {
+              "description": "Block BE Subnet",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "*",
+              "sourceAddressPrefix": "[variables('OnPremSubnetPrefix')]",
+              "destinationAddressPrefix": "*",
+              "access": "Deny",
+              "priority": 104,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "Allow-KMS-Outbound",
+            "properties": {
+              "description": "Allow KMS Outbound",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "1688",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "Internet",
+              "access": "Allow",
+              "priority": 150,
+              "direction": "Outbound"
+            }
+          },
+          {
+            "name": "Block-Internet-Inbound",
+            "properties": {
+              "description": "Block Internet Inbound",
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "*",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Deny",
+              "priority": 200,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "Block-Internet-Outboud",
+            "properties": {
+              "description": "Block Internet Outbound",
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "Internet",
+              "access": "Deny",
+              "priority": 201,
+              "direction": "Outbound"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "2015-05-01-preview",
+      "type": "Microsoft.Network/networkSecurityGroups",
+      "name": "[parameters('BENSGName')]",
+      "location": "[resourceGroup().location]",
+      "properties": {
+        "securityRules": [
+          {
+            "name": "rpd-inbound-from-onprem",
+            "properties": {
+              "description": "Allow RDP from OnPrem",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "3389",
+              "sourceAddressPrefix": "[variables('OnPremSubnetPrefix')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 100,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "Allow-FE-App-Inbound",
+            "properties": {
+              "description": "Allow FE Subnet for App",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "23",
+              "sourceAddressPrefix": "[variables('FESubnetPrefix')]",
+              "destinationAddressPrefix": "*",
+              "access": "Allow",
+              "priority": 101,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "Block_FE_Inbound",
+            "properties": {
+              "description": "Block FE Subnet",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "*",
+              "sourceAddressPrefix": "[variables('FESubnetPrefix')]",
+              "destinationAddressPrefix": "*",
+              "access": "Deny",
+              "priority": 102,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "Block-onpremm-Inbound",
+            "properties": {
+              "description": "Block BE Subnet",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "*",
+              "sourceAddressPrefix": "[variables('OnPremSubnetPrefix')]",
+              "destinationAddressPrefix": "*",
+              "access": "Deny",
+              "priority": 103,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "Allow-KMS-Outbound",
+            "properties": {
+              "description": "Allow KMS Outbound",
+              "protocol": "Tcp",
+              "sourcePortRange": "*",
+              "destinationPortRange": "1688",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "Internet",
+              "access": "Allow",
+              "priority": 150,
+              "direction": "Outbound"
+            }
+          },
+          {
+            "name": "Block-Internet-Inbound",
+            "properties": {
+              "description": "Block Interent Inbound",
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "*",
+              "sourceAddressPrefix": "Internet",
+              "destinationAddressPrefix": "*",
+              "access": "Deny",
+              "priority": 200,
+              "direction": "Inbound"
+            }
+          },
+          {
+            "name": "Block-Internet-Outbound",
+            "properties": {
+              "description": "Block Internet Outbound",
+              "protocol": "*",
+              "sourcePortRange": "*",
+              "destinationPortRange": "*",
+              "sourceAddressPrefix": "*",
+              "destinationAddressPrefix": "Internet",
+              "access": "Deny",
+              "priority": 201,
+              "direction": "Outbound"
+            }
+          }
+        ]
+      }
+    },
+    {
+      "apiVersion": "2015-05-01-preview",
+      "type": "Microsoft.Network/virtualNetworks",
+      "name": "[variables('virtualNetworkName')]",
+      "location": "[resourceGroup().location]",
+      "dependsOn": [
+        "[concat('Microsoft.Network/networkSecurityGroups/', parameters('FENSGName'))]",
+        "[concat('Microsoft.Network/networkSecurityGroups/', parameters('BENSGName'))]"  
+      ],
+      "properties": {
+        "addressSpace": {
+          "addressPrefixes": [
+            "[variables('addressPrefix')]"
+          ]
+        },
+        "subnets": [
+          {
+            "name": "[variables('FESubnetName')]",
+            "properties": {
+              "addressPrefix": "[variables('FESubnetPrefix')]",
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('FENSGName'))]"
+              }
+            }
+          },
+          {
+            "name": "[variables('BESubnetName')]",
+            "properties": {
+              "addressPrefix": "[variables('BESubnetPrefix')]",
+              "networkSecurityGroup": {
+                "id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('BENSGName'))]"
+              }
+            }
+          },
+          {
+            "name": "[variables('GWSubnetName')]",
+            "properties": {
+              "addressPrefix": "[variables('GWSubnetPrefix')]"
+            }
+          }          
+        ]
+      }
+    }
+  ]
+}
+
