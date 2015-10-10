@@ -44,6 +44,8 @@
     "WindowsOSVersion": "2012-R2-Datacenter",
     "rgname1": "RG-AZITCAMP-LAB04-S",
     "rgname2": "RG-AZITCAMP-LAB04-S",
+    "loc1": "East US",
+    "loc2": "East US 2",
     "SVNETName": "Lab04-S-VNET",
     "TVNETName": "Lab04-T-VNET",
     "SVNETID": "[resourceId('Microsoft.Network/virtualNetworks',variables('SVNETName'))]",
@@ -61,7 +63,7 @@
       "apiVersion": "2015-05-01-preview",
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[concat(variables('publicIPAddressName'),'0')]",
-      "location": "[variables('rgname1')]",
+      "location": "[variables('loc1')]",
       "properties": {
         "publicIPAllocationMethod": "Dynamic",
         "dnsSettings": {
@@ -73,7 +75,7 @@
       "apiVersion": "2015-05-01-preview",
       "type": "Microsoft.Network/publicIPAddresses",
       "name": "[concat(variables('publicIPAddressName'),'1')]",
-      "location": "[variables('rgname1')]",
+      "location": "[variables('loc1')]",
       "properties": {
         "publicIPAllocationMethod": "Dynamic"
       }
@@ -82,7 +84,7 @@
       "apiVersion": "2015-05-01-preview",
       "type": "Microsoft.Storage/storageAccounts",
       "name": "[parameters('storageAccount')]",
-      "location": "[variables('rgname1')]",
+      "location": "[variables('loc1')]",
       "properties": {
         "accountType": "Standard_LRS"
       }
@@ -112,7 +114,7 @@
       "apiVersion": "2015-05-01-preview",
       "type": "Microsoft.Network/virtualNetworks",
       "name": "[variables('TVNETName')]",
-      "location": "[variables('rgname2')]",
+      "location": "[variables('loc2')]",
       "properties": {
         "addressSpace": {
           "addressPrefixes": [
@@ -133,7 +135,7 @@
       "apiVersion": "2015-05-01-preview",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "onPremPS-nif",
-      "location": "[variables('rgname1')]",
+      "location": "[variables('loc1')]",
       "dependsOn": [
         "[concat('Microsoft.Network/virtualNetworks/', variables('SVNETName'))]"
       ],
@@ -159,7 +161,7 @@
       "apiVersion": "2015-06-15",
       "type": "Microsoft.Compute/virtualMachines",
       "name": "onPremPS",
-      "location": "[variables('rgname1')]",
+      "location": "[variables('loc1')]",
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts',parameters('storageAccount'))]",
         "[resourceId('Microsoft.Network/networkInterfaces','onPremPS-nif')]"
@@ -208,7 +210,7 @@
           "type": "Microsoft.Compute/virtualMachines/extensions",
           "name": "onPremPS/ConfigureVM",
           "apiVersion": "2015-05-01-preview",
-          "location": "[variables('rgname1')]",
+          "location": "[variables('loc1')]",
           "dependsOn": [
             "[resourceId('Microsoft.Compute/virtualMachines', 'onPremPS')]"
           ],
@@ -232,7 +234,7 @@
       "apiVersion": "2015-05-01-preview",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "source-nif",
-      "location": "[variables('rgname1')]",
+      "location": "[variables('loc1')]",
        "dependsOn": [
         "[concat('Microsoft.Network/virtualNetworks/', variables('SVNETName'))]"
         ],
@@ -258,7 +260,7 @@
       "apiVersion": "2015-05-01-preview",
       "type": "Microsoft.Compute/virtualMachines",
       "name": "onPremSource",
-      "location": "[variables('rgname1')]",
+      "location": "[variables('loc1')]",
       "dependsOn": [
         "[concat('Microsoft.Storage/storageAccounts/', parameters('storageAccount'))]",
         "Microsoft.Network/networkInterfaces/source-nif"
@@ -301,7 +303,7 @@
       "type": "Microsoft.Compute/virtualMachines/extensions",
       "name": "onPremSource/ConfigureVM",
       "apiVersion": "2015-05-01-preview",
-      "location": "[variables('rgname1')]",
+      "location": "[variables('loc1')]",
       "dependsOn": [
         "[resourceId('Microsoft.Compute/virtualMachines', 'onPremSource')]"
       ],
