@@ -168,7 +168,7 @@
       ],
       "properties": {
         "hardwareProfile": {
-          "vmSizePS": "[variables('vmSizePS')]"
+          "vmSize": "[variables('vmSizePS')]"
         },
         "osProfile": {
           "computername": "onPremPS",
@@ -267,7 +267,7 @@
       ],
       "properties": {
         "hardwareProfile": {
-          "vmSizePS": "[variables('vmSizeSource')]"
+          "vmSize": "[variables('vmSizeSource')]"
         },
         "osProfile": {
           "computername": "onPremSource",
