@@ -1,0 +1,19 @@
+{
+  "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "storageAccount": {
+      "value": "myStorageAccount"
+    },
+    "adminUsername": {
+      "value": "ITCampAdmin"
+    },
+    "publicDNSName": {
+      "value": "myDnsName"
+    },
+    "assetlocation": {
+      "value": "https://github.com/AZITCAMP/Labfiles/raw/master"
+    }
+  }
+}
+
