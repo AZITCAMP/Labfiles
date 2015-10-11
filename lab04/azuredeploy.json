@@ -204,31 +204,7 @@
              "storageUri": "[concat('http://',parameters('StorageAccount'),'.blob.core.windows.net')]"
           }
         }
-      },
-      "resources": [
-        {
-          "type": "Microsoft.Compute/virtualMachines/extensions",
-          "name": "onPremPS/ConfigureVM",
-          "apiVersion": "2015-05-01-preview",
-          "location": "[variables('loc1')]",
-          "dependsOn": [
-            "[resourceId('Microsoft.Compute/virtualMachines', 'onPremPS')]"
-          ],
-          "properties": {
-            "publisher": "Microsoft.Powershell",
-            "type": "DSC",
-            "typeHandlerVersion": "1.9",
-            "settings": {
-              "ModulesUrl": "[concat(parameters('assetLocation'),'/lab04/ConfigureVM.zip')]",
-              "ConfigurationFunction": "ConfigureVM.ps1\\ConfigureVM",
-              "Properties": {
-                "MachineName": "onPremPS"
-              }
-            },
-            "protectedSettings": null
-           }
-         }    
-      ]
+      }
     },
     {
       "apiVersion": "2015-05-01-preview",
@@ -297,28 +273,6 @@
             }
           ]
         }
-      }
-    },
-    {
-      "type": "Microsoft.Compute/virtualMachines/extensions",
-      "name": "onPremSource/ConfigureVM",
-      "apiVersion": "2015-05-01-preview",
-      "location": "[variables('loc1')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Compute/virtualMachines', 'onPremSource')]"
-      ],
-      "properties": {
-        "publisher": "Microsoft.Powershell",
-        "type": "DSC",
-        "typeHandlerVersion": "1.9",
-        "settings": {
-          "ModulesUrl": "[concat(parameters('assetLocation'),'/lab04/ConfigureVM.zip')]",
-          "ConfigurationFunction": "ConfigureVM.ps1\\ConfigureVM",
-          "Properties": {
-            "MachineName": "onPremSource"
-            }
-          },
-        "protectedSettings": null
       }
     }
   ]
