@@ -1,4 +1,4 @@
-Configuration ConfigureVM
+Configuration ConfigurePsVM
 {
   param ($MachineName)
 

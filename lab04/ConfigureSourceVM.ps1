@@ -1,4 +1,4 @@
-Configuration ConfigureVM
+Configuration ConfigureSourceVM
 {
   param ($MachineName)
 
