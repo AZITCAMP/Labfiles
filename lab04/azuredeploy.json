@@ -48,6 +48,8 @@
     "loc2": "East US 2",
     "SVNETName": "Lab04-S-VNET",
     "TVNETName": "Lab04-T-VNET",
+    "psVMName": "onPremPS",
+    "sourceVMName": "onPremSource",
     "SVNETID": "[resourceId('Microsoft.Network/virtualNetworks',variables('SVNETName'))]",
     "SourceSubnetPrefix": "10.0.0.0/24",
     "TargetSubnetPrefix": "10.0.0.0/24",
@@ -56,8 +58,13 @@
     "SourceSubnet-id": "[concat(variables('SVNETID'),'/subnets/',variables('SourceSubnetName'))]",
     "publicIPAddressName": "PubIP",
     "vnetAddressRange": "10.0.0.0/16",
-    "subnetAddressRange": "10.0.0.0/24" 
-  },
+    "subnetAddressRange": "10.0.0.0/24",
+    "psConfigurationFunction": "ConfigurePsVM.ps1\\ConfigurePsVM",
+    "sourceConfigurationFunction": "ConfigureSourceVM.ps1\\ConfigureSourceVM",
+    "DscExtensionName": "DscExtension",
+    "vmStorageAccountContainerName":"vhds",
+    "sizeOfEachDataDiskInGB": "128"
+   },
   "resources": [
     {
       "apiVersion": "2015-05-01-preview",
@@ -160,7 +167,7 @@
     {
       "apiVersion": "2015-06-15",
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "onPremPS",
+      "name": "[variables('psVMName')]",
       "location": "[variables('loc1')]",
       "dependsOn": [
         "[resourceId('Microsoft.Storage/storageAccounts',parameters('storageAccount'))]",
@@ -171,7 +178,7 @@
           "vmSize": "[variables('vmSizePS')]"
         },
         "osProfile": {
-          "computername": "onPremPS",
+          "computername": "[variables('psVMName')]",
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPassword')]"
         },
@@ -182,6 +189,58 @@
             "sku": "[variables('windowsOSVersion')]",
             "version": "latest"
           },
+          "dataDisks": [
+            {
+               "name": "datadisk1",
+              "diskSizeGB": "[variables('sizeOfEachDataDiskInGB')]",
+              "lun": 0,
+              "caching": "ReadWrite",
+              "vhd": {
+                "Uri": "[concat('http://',parameters('storageAccount'),'.blob.core.windows.net/vhds/onPremPS-datadisk1.vhd')]"
+              },
+              "createOption": "Empty"
+            },
+            {
+              "name": "datadisk2",
+              "diskSizeGB": "[variables('sizeOfEachDataDiskInGB')]",
+              "lun": 1,
+              "caching": "ReadWrite",
+              "vhd": {
+                "Uri": "[concat('http://',parameters('storageAccount'),'.blob.core.windows.net/vhds/onPremPS-datadisk2.vhd')]"
+              },
+              "createOption": "Empty"
+            },
+            {
+              "name": "datadisk3",
+              "diskSizeGB": "[variables('sizeOfEachDataDiskInGB')]",
+              "lun": 2,
+              "caching": "ReadWrite",
+              "vhd": {
+                "Uri": "[concat('http://',parameters('storageAccount'),'.blob.core.windows.net/vhds/onPremPS-datadisk3.vhd')]"
+              },
+              "createOption": "Empty"
+            },
+            {
+              "name": "datadisk4",
+              "diskSizeGB": "[variables('sizeOfEachDataDiskInGB')]",
+              "lun": 3,
+              "caching": "ReadWrite",
+              "vhd": {
+                "Uri": "[concat('http://',parameters('storageAccount'),'.blob.core.windows.net/vhds/onPremPS-datadisk4.vhd')]"
+              },
+              "createOption": "Empty"
+            },
+            {
+              "name": "datadisk5",
+              "diskSizeGB": "[variables('sizeOfEachDataDiskInGB')]",
+              "lun": 4,
+              "caching": "ReadWrite",
+              "vhd": {
+                "Uri": "[concat('http://',parameters('storageAccount'),'.blob.core.windows.net/vhds/onPremPS-datadisk5.vhd')]"
+              },
+              "createOption": "Empty"
+            }
+          ],
           "osDisk": {
             "name": "osdisk",
             "vhd": {
@@ -233,9 +292,32 @@
       }
     },
     {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(variables('psVMName'),'/', variables('DscExtensionName'))]",
+      "apiVersion": "2015-05-01-preview",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/', variables('psVMName'))]"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Powershell",
+        "type": "DSC",
+        "typeHandlerVersion": "1.9",
+        "settings": {
+          "ModulesUrl": "[concat(parameters('assetLocation'),'/lab04/ConfigurePsVM.zip')]",
+          "SasToken": "",
+          "ConfigurationFunction": "[variables('psConfigurationFunction')]",
+          "Properties": {
+            "MachineName": "[variables('psVMName')]"
+          }
+        },
+        "protectedSettings": null
+      }
+    },
+    {
       "apiVersion": "2015-05-01-preview",
       "type": "Microsoft.Compute/virtualMachines",
-      "name": "onPremSource",
+      "name": "[variables('sourceVMName')]",
       "location": "[variables('loc1')]",
       "dependsOn": [
         "[concat('Microsoft.Storage/storageAccounts/', parameters('storageAccount'))]",
@@ -246,7 +328,7 @@
           "vmSize": "[variables('vmSizeSource')]"
         },
         "osProfile": {
-          "computername": "onPremSource",
+          "computername": "[variables('sourceVMName')]",
           "adminUsername": "[parameters('adminUsername')]",
           "adminPassword": "[parameters('adminPassword')]"
         },
@@ -273,6 +355,29 @@
             }
           ]
         }
+      }
+    },
+    {
+      "type": "Microsoft.Compute/virtualMachines/extensions",
+      "name": "[concat(variables('sourceVMName'),'/', variables('DscExtensionName'))]",
+      "apiVersion": "2015-05-01-preview",
+      "location": "[parameters('location')]",
+      "dependsOn": [
+        "[concat('Microsoft.Compute/virtualMachines/', variables('sourceVMName'))]"
+      ],
+      "properties": {
+        "publisher": "Microsoft.Powershell",
+        "type": "DSC",
+        "typeHandlerVersion": "1.9",
+        "settings": {
+          "ModulesUrl": "[concat(parameters('assetLocation'),'/lab04/ConfigureSourceVM.zip')]",
+          "SasToken": "",
+          "ConfigurationFunction": "[variables('sourceConfigurationFunction')]",
+          "Properties": {
+            "MachineName": "[variables('sourceVMName')]"
+          }
+        },
+        "protectedSettings": null
       }
     }
   ]
