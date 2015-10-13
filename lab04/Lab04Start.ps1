@@ -1,10 +1,12 @@
 ﻿<# 
 .SYNOPSIS 
-   This script is used to create the infrastructure starting point for Lab 03 of the Azure ITPRO Camp lab exercises.
-   The script creates a new resource group    and a new resource group deployment that comprises 2 virtual machines 
-   and 3 subnets. The scrip requires that you provide your initials. It uses these initials to create the unique names
-   required by the deployment.
-      
+   This script, in combination with an ARM template called by the script, is used to create the infrastructure 
+   starting point for Lab 04 of the Azure ITPRO Camp lab exercises.The script creates two storage accounts:
+   one in East US, and the other in East US 2. The script creates two virtual machines in East US. These
+   virtual machines are used as the source and process server to configure and test ASR.The script uses classic 
+   mode to create a virtual network in East US 2.
+   
+       
 .DESCRIPTION | USAGE
    The script first attempts to remove any local Azure subscription certificates that might interfere with 
    logging into the subscription. You can ignore any errors, if they appear, before you are prompted to log on 
@@ -17,9 +19,7 @@
    Finally, just before the deployment begins, you will be prompted to provide the Admin password.  
 
    
-   The scipt may take anywhere from 10 - 20 or more minutes to complete after you enter the Admin password. The VPN gateway takes some 
-   time to provision, and will be the last element to be provisioned. Please be patient. You can log in to the Azure 
-   to watch the progress of the deployment provisioning process. 
+   The scipt may take anywhere from 10 - 20 or more minutes to complete after you enter the Admin password.  
       
 #> 
 
@@ -71,8 +71,8 @@ $rand = Get-Random -Minimum 10000 -Maximum 99999
 $publicDNSname = "$init" + "$rand"
 $AdminName = "ITCampAdmin"
 $rgname1 = "RG-AZITCAMP-LAB04-S"
-$rgname1 = "RG-AZITCAMP-LAB04-T"
-$deploymentname = "ASR-Setup"
+$rgname2 = "RG-AZITCAMP-LAB04-T"
+$deploymentname = "ASR-LAB"
 $templatefilepath = "C:\LabFiles\AZITPROCamp\Lab04\azuredeploy.json"
 $templatefileURI = "https://raw.githubusercontent.com/AZITCAMP/Labfiles/master/lab04/azuredeploy.json"
 $parameterfilepath = "C:\LabFiles\AZITPROCamp\Lab04\azuredeploy.parameters.json"
@@ -118,18 +118,30 @@ while ($uniqueName -eq $false)
 	    }
 	}
 
-Write-Host "Creating cloud service $cloudsvcname in $loc2"
-New-AzureService -ServiceName $cloudsvcname -Location $loc2
+# Write-Host "Creating cloud service $cloudsvcname in $loc2"
+# New-AzureService -ServiceName $cloudsvcname -Location $loc2
+
+Write-Host ""
 	
-Write-Host "Creating storage account $storename in $location"
+Write-Host "Creating storage account $tstorename in $loc2"
 New-AzureStorageAccount -StorageAccountName $tstoreName -Location $loc2
 
+#Create VNET and subnet using classic mode
 
-	
+$dir = "c:\Source"
+$FileURI = "https://github.com/AZITCAMP/Labfiles/raw/master/lab04/AzureNetwork.netcfg"
+if(!(Test-path $dir)){New-Item $dir -ItemType directory}
+$output = "$dir\AzureNetwork.netcfg"
+(New-Object System.Net.WebClient).DownloadFile($FileURI,$output)
+
+Write-Host "Creating Virtual Network"
+Set-AzureVNetConfig -ConfigurationPath $output
+
+Write-Host ""	
 
 Write-host "Switching to Azure Resource Manager mode"
 
-Pause
+Write-Host ""
 
 #Switch to AzureResource Manager mode.
 
@@ -174,14 +186,12 @@ $parameters.assetlocation = $assetlocation
  
 # Create a new resource group deployment using the template file and template parameters stored in the hash table. 
  
-New-AzureResourceGroupdeployment -Name $deploymentname -ResourceGroupName $rgname2 -TemplateParameterObject $parameters -TemplateUri $templatefileURI -Force 
+New-AzureResourceGroupdeployment -Name $deploymentname -ResourceGroupName $rgname1 -TemplateParameterObject $parameters -TemplateUri $templatefileURI -Force 
 
 
-# Display the public IP addresses used by the deployment
-
-Write-Host ""
-Write-Host "The following shows the public IP addresses used by the deployment. PubiP0 corresponds to FE1; PubIP1 corresponds to BE1."
-
-Get-AzurePublicIpAddress -ResourceGroupName $rgname1 | select name, IPaddress
 
 
+
+# Get-AzurePublicIpAddress -ResourceGroupName $rgname1 | select name, IPaddress
+
+# Get-AzureResourceGroup | Remove-AzureResourceGroup -force

@@ -119,27 +119,6 @@
     },
     {
       "apiVersion": "2015-05-01-preview",
-      "type": "Microsoft.Network/virtualNetworks",
-      "name": "[variables('TVNETName')]",
-      "location": "[variables('loc2')]",
-      "properties": {
-        "addressSpace": {
-          "addressPrefixes": [
-            "[variables('vnetAddressRange')]"
-          ]
-        },
-        "subnets": [
-          {
-            "name": "[variables('TargetSubnetName')]",
-            "properties": {
-              "addressPrefix": "[variables('TargetSubnetPrefix')]"
-            }
-          }
-        ]
-      }
-    },
-    {
-      "apiVersion": "2015-05-01-preview",
       "type": "Microsoft.Network/networkInterfaces",
       "name": "onPremPS-nif",
       "location": "[variables('loc1')]",
