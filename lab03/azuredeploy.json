@@ -272,7 +272,7 @@
           "properties": {
             "publisher": "Microsoft.Powershell",
             "type": "DSC",
-            "typeHandlerVersion": "1.9",
+            "typeHandlerVersion": "2.8",
             "settings": {
               "ModulesUrl": "[concat(parameters('assetLocation'),'/lab03/ConfigureFE1.zip')]",
               "ConfigurationFunction": "ConfigureFE1.ps1\\ConfigureFE1",
@@ -364,7 +364,7 @@
       "properties": {
         "publisher": "Microsoft.Powershell",
         "type": "DSC",
-        "typeHandlerVersion": "1.9",
+        "typeHandlerVersion": "2.8",
         "settings": {
           "ModulesUrl": "[concat(parameters('assetLocation'),'/lab03/ConfigureBE1.zip')]",
           "ConfigurationFunction": "Configurebe1.ps1\\Configurebe1",

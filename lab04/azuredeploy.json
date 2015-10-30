@@ -281,7 +281,7 @@
       "properties": {
         "publisher": "Microsoft.Powershell",
         "type": "DSC",
-        "typeHandlerVersion": "1.9",
+        "typeHandlerVersion": "2.8",
         "settings": {
           "ModulesUrl": "[concat(parameters('assetLocation'),'/lab04/ConfigurePsVM.zip')]",
           "SasToken": "",
@@ -347,7 +347,7 @@
       "properties": {
         "publisher": "Microsoft.Powershell",
         "type": "DSC",
-        "typeHandlerVersion": "1.9",
+        "typeHandlerVersion": "2.8",
         "settings": {
           "ModulesUrl": "[concat(parameters('assetLocation'),'/lab04/ConfigureSourceVM.zip')]",
           "SasToken": "",
