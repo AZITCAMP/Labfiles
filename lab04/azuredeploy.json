@@ -45,7 +45,7 @@
     "rgname1": "RG-AZITCAMP-LAB04-S",
     "rgname2": "RG-AZITCAMP-LAB04-S",
     "loc1": "East US",
-    "loc2": "East US 2",
+    "loc2": "Central US",
     "SVNETName": "Lab04-S-VNET",
     "TVNETName": "Lab04-T-VNET",
     "psVMName": "onPremPS",

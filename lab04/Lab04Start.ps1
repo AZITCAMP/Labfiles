@@ -27,6 +27,8 @@
 
 $init = Read-Host -Prompt "Please type your initials in lower case, and then press ENTER."
 Write-Host ""
+# FORCE lowercase for users who do not read
+$init = $init.ToLower()
 
 
 #Remove any subscription information that could interfere with then sign out before signing into the Azure account.
@@ -66,7 +68,7 @@ Select-AzureSubscription -SubscriptionName $subname
 #Declare variables for use in the script.
 
 $loc1 = "East US"
-$loc2 = "East US 2"
+$loc2 = "Central US"
 $rand = Get-Random -Minimum 10000 -Maximum 99999
 $publicDNSname = "$init" + "$rand"
 $AdminName = "ITCampAdmin"

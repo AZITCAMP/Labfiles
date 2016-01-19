@@ -2,7 +2,7 @@
 <NetworkConfiguration xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://schemas.microsoft.com/ServiceHosting/2011/07/NetworkConfiguration">
   <VirtualNetworkConfiguration>
      <VirtualNetworkSites>
-      <VirtualNetworkSite name="Lab04-T-VNET" Location="East US 2">
+      <VirtualNetworkSite name="Lab04-T-VNET" Location="Central US">
         <AddressSpace>
           <AddressPrefix>10.0.0.0/16</AddressPrefix>
         </AddressSpace>
